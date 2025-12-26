@@ -1,0 +1,66 @@
+-- Message table for storing chat messages
+-- Used by SQLDelight for type-safe SQL queries
+
+CREATE TABLE IF NOT EXISTS Message (
+    id TEXT PRIMARY KEY NOT NULL,
+    conversationId TEXT NOT NULL,
+    content TEXT NOT NULL,
+    senderId TEXT NOT NULL,
+    timestamp INTEGER NOT NULL,
+    status TEXT NOT NULL
+);
+
+-- Index for faster conversation queries
+CREATE INDEX IF NOT EXISTS idx_message_conversation ON Message(conversationId);
+
+-- Index for timestamp ordering
+CREATE INDEX IF NOT EXISTS idx_message_timestamp ON Message(timestamp DESC);
+
+-- Query: Select all messages for a conversation, ordered by timestamp descending (newest first)
+selectByConversation:
+SELECT *
+FROM Message
+WHERE conversationId = ?
+ORDER BY timestamp DESC;
+
+-- Query: Select a single message by ID
+selectById:
+SELECT *
+FROM Message
+WHERE id = ?
+LIMIT 1;
+
+-- Query: Insert or replace a message (upsert)
+insert:
+INSERT OR REPLACE INTO Message(id, conversationId, content, senderId, timestamp, status)
+VALUES (?, ?, ?, ?, ?, ?);
+
+-- Query: Update message status
+updateStatus:
+UPDATE Message
+SET status = ?
+WHERE id = ?;
+
+-- Query: Delete a message by ID
+deleteById:
+DELETE FROM Message
+WHERE id = ?;
+
+-- Query: Delete all messages in a conversation
+deleteByConversation:
+DELETE FROM Message
+WHERE conversationId = ?;
+
+-- Query: Count messages in a conversation
+countByConversation:
+SELECT COUNT(*)
+FROM Message
+WHERE conversationId = ?;
+
+-- Query: Get latest message in a conversation
+getLatestMessage:
+SELECT *
+FROM Message
+WHERE conversationId = ?
+ORDER BY timestamp DESC
+LIMIT 1;

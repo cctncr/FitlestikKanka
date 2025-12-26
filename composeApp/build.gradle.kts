@@ -50,6 +50,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -66,6 +67,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.websockets)
 
             // SQLDelight - Database
             implementation(libs.sqldelight.runtime)
@@ -73,6 +75,9 @@ kotlin {
 
             // Kotlinx Serialization
             implementation(libs.kotlinx.serialization.json)
+
+            // Kotlinx DateTime
+            implementation(libs.kotlinx.datetime)
         }
 
         commonTest.dependencies {
@@ -148,7 +153,6 @@ sqldelight {
     databases {
         create("AppDatabase") {
             packageName.set("com.example.fitlestikkanka.database")
-            generateAsync.set(true)
         }
     }
 }
