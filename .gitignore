@@ -1,0 +1,236 @@
+# Kotlin Multiplatform Project - Comprehensive .gitignore
+# Generated for FitlestikKanka project using Koin, ViewModel, Ktor, SQLDelight
+
+### Gradle ###
+.gradle
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+### Kotlin ###
+*.kotlin_module
+.kotlin
+*.hprof
+
+### Android ###
+*.iml
+*.apk
+*.ap_
+*.aab
+
+# Built application files
+*.ap_
+*.dex
+*.class
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+release/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Android Studio captures folder
+captures/
+.externalNativeBuild
+.cxx
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+*.hprof
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Android Profiling
+*.hprof
+
+### iOS ###
+# Xcode
+xcuserdata/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+# Pods
+Pods/
+*.podspec
+
+# AppCode
+.idea/
+
+# CocoaPods
+!Podfile.lock
+*.podspec
+
+# Carthage
+Carthage/Build/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# SPM
+.swiftpm
+.build/
+
+### Desktop (JVM) ###
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### Windows ###
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+### Linux ###
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+### JetBrains IDEs ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+atlassian-ide-plugin.xml
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+### VSCode ###
+.vscode/
+*.code-workspace
+.history/
+
+### SQLDelight ###
+# SQLDelight generates .db files during development
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+# SQLDelight generated sources (if you want to ignore them)
+# build/generated/sqldelight/
+
+### Ktor ###
+# Ktor development files
+ktor-*.log
+
+### Koin ###
+# Koin typically doesn't generate files to ignore, but logs might be generated
+koin-*.log
+
+### Test Results ###
+test-results/
+*.log
+*.tmp
+
+### Package Files ###
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### Logs ###
+*.log
+logs/
+*.log.*
+
+### Temporary Files ###
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.~lock.*
+
+### Node Modules (if using any JS tools) ###
+node_modules/
+npm-debug.log
+yarn-error.log
+
+### Environment Variables ###
+.env
+.env.local
+.env.*.local
+
+### Build Output ###
+dist/
+build/
+.kotlin/
+
+### Compose Multiplatform ###
+.compose-js-ir-runtime-sources
+
+### Kotlin Native ###
+.konan/
+
+### Misc ###
+*.bak
+*.orig
+.cache/
