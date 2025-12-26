@@ -47,7 +47,7 @@ private fun DebtsScreenContent(
     ) {
         when (uiState) {
             is DebtsUiState.Loading -> LoadingState()
-            is DebtsUiState.Success -> DebtsList(debts = uiState.debts)
+            is DebtsUiState.Success -> DebtBalanceList(balances = uiState.balances)
             is DebtsUiState.Empty -> EmptyState()
             is DebtsUiState.Error -> ErrorState(
                 message = uiState.message,
@@ -68,31 +68,42 @@ private fun LoadingState() {
 }
 
 @Composable
-private fun DebtsList(debts: List<Debt>) {
+private fun DebtBalanceList(balances: List<com.example.fitlestikkanka.debts.domain.model.DebtBalance>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(debts) { debt ->
-            DebtCard(debt = debt)
+        items(balances) { balance ->
+            DebtBalanceCard(balance = balance)
         }
     }
 }
 
 @Composable
-private fun DebtCard(debt: Debt) {
+private fun DebtBalanceCard(balance: com.example.fitlestikkanka.debts.domain.model.DebtBalance) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF1E1E1E)
         )
     ) {
-        Text(
-            text = debt.description,
-            modifier = Modifier.padding(16.dp),
-            color = Color.White,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = balance.username,
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = "Borçlu: ${balance.totalOwed} TL",
+                color = Color.Red,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Alacaklı: ${balance.totalOwing} TL",
+                color = Color.Green,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
     }
 }
 

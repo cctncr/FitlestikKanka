@@ -1,5 +1,6 @@
 package com.example.fitlestikkanka.core.di
 
+import com.example.fitlestikkanka.chat.data.AiClassificationHandler
 import com.example.fitlestikkanka.chat.data.datasource.local.MessageLocalDataSource
 import com.example.fitlestikkanka.chat.data.datasource.local.MessageLocalDataSourceImpl
 import com.example.fitlestikkanka.chat.data.datasource.remote.WebSocketClient
@@ -36,7 +37,18 @@ val chatModule = module {
 
     // Data Sources - Remote
     single<WebSocketClient> {
-        WebSocketClientImpl(httpClient = get())
+        WebSocketClientImpl(
+            httpClient = get(),
+            authRepository = get()
+        )
+    }
+
+    // AI Classification Handler
+    single<AiClassificationHandler> {
+        AiClassificationHandler(
+            tasksRepository = get(),
+            debtsRepository = get()
+        )
     }
 
     // Repositories
@@ -44,7 +56,8 @@ val chatModule = module {
         MessageRepositoryImpl(
             localDataSource = get(),
             webSocketClient = get(),
-            currentUserId = "current-user" // TODO: Get from auth module/session
+            currentUserId = "1", // Will be set from authenticated user
+            aiClassificationHandler = get()
         )
     }
 

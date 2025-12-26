@@ -1,5 +1,6 @@
 package com.example.fitlestikkanka.chat.data.repository
 
+import com.example.fitlestikkanka.chat.data.AiClassificationHandler
 import com.example.fitlestikkanka.chat.data.datasource.local.MessageLocalDataSource
 import com.example.fitlestikkanka.chat.data.datasource.remote.WebSocketClient
 import com.example.fitlestikkanka.chat.data.mapper.MessageMapper
@@ -26,11 +27,13 @@ import kotlin.uuid.Uuid
  * @property localDataSource Local SQLDelight data source
  * @property webSocketClient Remote WebSocket client
  * @property currentUserId ID of the current logged-in user
+ * @property aiClassificationHandler Handler for AI-classified messages
  */
 class MessageRepositoryImpl(
     private val localDataSource: MessageLocalDataSource,
     private val webSocketClient: WebSocketClient,
-    private val currentUserId: String
+    private val currentUserId: String,
+    private val aiClassificationHandler: AiClassificationHandler
 ) : MessageRepository {
 
     private val repositoryScope = CoroutineScope(Dispatchers.Default)
@@ -118,12 +121,17 @@ class MessageRepositoryImpl(
 
     /**
      * Observes incoming messages from WebSocket and saves them to local DB.
+     * Also handles AI classification routing to Tasks/Debts.
      */
     private fun observeIncomingMessages() {
         repositoryScope.launch {
             webSocketClient.observeIncomingMessages()
-                .map { dto -> MessageMapper.toDomain(dto, currentUserId) }
-                .collect { message ->
+                .collect { dto ->
+                    // Handle AI classification first
+                    aiClassificationHandler.handleClassification(dto)
+
+                    // Then save message to local DB
+                    val message = MessageMapper.toDomain(dto, currentUserId)
                     localDataSource.insertMessage(message)
                 }
         }

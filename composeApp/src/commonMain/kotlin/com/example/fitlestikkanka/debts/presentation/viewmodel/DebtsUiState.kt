@@ -1,6 +1,6 @@
 package com.example.fitlestikkanka.debts.presentation.viewmodel
 
-import com.example.fitlestikkanka.debts.domain.model.Debt
+import com.example.fitlestikkanka.debts.domain.model.DebtBalance
 
 /**
  * UI state for Debts screen.
@@ -17,10 +17,10 @@ sealed interface DebtsUiState {
     /**
      * Success state - debts loaded successfully
      *
-     * @param debts List of debts to display
+     * @param balances List of debt balances to display
      */
     data class Success(
-        val debts: List<Debt>
+        val balances: List<DebtBalance>
     ) : DebtsUiState
 
     /**

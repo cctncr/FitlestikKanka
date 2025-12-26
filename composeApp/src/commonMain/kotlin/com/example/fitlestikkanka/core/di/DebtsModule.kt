@@ -4,7 +4,8 @@ import com.example.fitlestikkanka.debts.data.datasource.remote.DebtsApiService
 import com.example.fitlestikkanka.debts.data.datasource.remote.DebtsApiServiceImpl
 import com.example.fitlestikkanka.debts.data.repository.DebtsRepositoryImpl
 import com.example.fitlestikkanka.debts.domain.repository.DebtsRepository
-import com.example.fitlestikkanka.debts.domain.usecase.LoadDebtsUseCase
+import com.example.fitlestikkanka.debts.domain.usecase.LoadDebtBalanceUseCase
+import com.example.fitlestikkanka.debts.domain.usecase.SettleDebtUseCase
 import com.example.fitlestikkanka.debts.presentation.viewmodel.DebtsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -32,11 +33,19 @@ val debtsModule = module {
 
     // Use Cases
     factory {
-        LoadDebtsUseCase(debtsRepository = get())
+        LoadDebtBalanceUseCase(debtsRepository = get())
+    }
+
+    factory {
+        SettleDebtUseCase(debtsRepository = get())
     }
 
     // ViewModels
     viewModel {
-        DebtsViewModel(loadDebtsUseCase = get())
+        DebtsViewModel(
+            loadDebtBalanceUseCase = get(),
+            settleDebtUseCase = get(),
+            debtsRepository = get()
+        )
     }
 }

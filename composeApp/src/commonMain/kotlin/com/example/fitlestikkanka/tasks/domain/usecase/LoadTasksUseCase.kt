@@ -1,23 +1,24 @@
 package com.example.fitlestikkanka.tasks.domain.usecase
 
 import com.example.fitlestikkanka.tasks.domain.model.Task
+import com.example.fitlestikkanka.tasks.domain.model.TaskStatus
 import com.example.fitlestikkanka.tasks.domain.repository.TasksRepository
 
 /**
  * Use case for loading tasks.
  *
- * Encapsulates business logic for fetching task list.
- * Single responsibility: coordinate task loading operation.
+ * Encapsulates the business logic of fetching tasks from backend.
  */
 class LoadTasksUseCase(
     private val tasksRepository: TasksRepository
 ) {
     /**
-     * Executes the use case to load tasks.
+     * Execute load tasks operation.
      *
-     * @return Result containing list of tasks or error
+     * @param status Optional status filter
+     * @return Result containing list of tasks on success
      */
-    suspend operator fun invoke(): Result<List<Task>> {
-        return tasksRepository.loadTasks()
+    suspend operator fun invoke(status: TaskStatus? = null): Result<List<Task>> {
+        return tasksRepository.loadTasks(status)
     }
 }

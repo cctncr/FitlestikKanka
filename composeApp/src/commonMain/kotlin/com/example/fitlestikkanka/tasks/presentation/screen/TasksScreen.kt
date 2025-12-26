@@ -87,12 +87,18 @@ private fun TaskCard(task: Task) {
             containerColor = Color(0xFF1E1E1E)
         )
     ) {
-        Text(
-            text = task.description,
-            modifier = Modifier.padding(16.dp),
-            color = Color.White,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = task.itemName,
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = "Status: ${task.status}",
+                color = Color.Gray,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
 

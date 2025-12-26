@@ -18,6 +18,6 @@ class LoadDebtsUseCase(
      * @return Result containing list of debts or error
      */
     suspend operator fun invoke(): Result<List<Debt>> {
-        return debtsRepository.loadDebts()
+        return debtsRepository.loadHistory()
     }
 }
