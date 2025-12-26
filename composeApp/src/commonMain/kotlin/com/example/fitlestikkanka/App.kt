@@ -2,85 +2,80 @@ package com.example.fitlestikkanka
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.example.fitlestikkanka.chat.presentation.screen.ChatScreen
+import com.example.fitlestikkanka.core.components.BottomNavigationBar
 import com.example.fitlestikkanka.core.di.appModule
 import com.example.fitlestikkanka.core.di.chatModule
+import com.example.fitlestikkanka.core.di.debtsModule
 import com.example.fitlestikkanka.core.di.platformModule
+import com.example.fitlestikkanka.core.di.tasksModule
+import com.example.fitlestikkanka.core.navigation.Screen
+import com.example.fitlestikkanka.debts.presentation.screen.DebtsScreen
+import com.example.fitlestikkanka.tasks.presentation.screen.TasksScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
 /**
  * Main App composable.
- * Initializes Koin dependency injection and sets up navigation.
+ * Initializes Koin dependency injection and sets up bottom navigation.
  *
- * For demo purposes, provides a button to navigate to ChatScreen.
- * In a real app, this would use proper navigation (Voyager, Decompose, etc.)
+ * Uses manual screen state management with sealed interface Screen.
+ * Three main screens: Chat, Tasks (Görevler), Debts (Borçlar).
  */
 @Composable
 @Preview
 fun App() {
     KoinApplication(
         application = {
-            modules(platformModule, appModule, chatModule)
+            modules(
+                platformModule,
+                appModule,
+                chatModule,
+                tasksModule,  // NEW: Tasks feature module
+                debtsModule   // NEW: Debts feature module
+            )
         }
     ) {
         MaterialTheme {
-            var showChat by remember { mutableStateOf(false) }
+            AppContent()
+        }
+    }
+}
 
-            if (showChat) {
-                // ChatScreen with mock data
-                ChatScreen(
+@Composable
+private fun AppContent() {
+    // Manual screen state management
+    var currentScreen by remember { mutableStateOf<Screen>(Screen.Chat) }
+
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(
+                currentScreen = currentScreen,
+                onScreenSelected = { screen -> currentScreen = screen }
+            )
+        },
+        containerColor = Color(0xFF121212)
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF121212))
+                .padding(paddingValues)
+        ) {
+            // Screen switching based on current state
+            when (currentScreen) {
+                Screen.Chat -> ChatScreen(
                     conversationId = "demo-conversation-1",
                     currentUserId = "current-user",
-                    onNavigateBack = { showChat = false }
+                    onNavigateBack = { /* Optional: handle back if needed */ }
                 )
-            } else {
-                // Home screen with button to open chat
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color(0xFF121212))
-                        .safeContentPadding()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "FitlestikKanka Chat",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = Color.White
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    Button(
-                        onClick = { showChat = true },
-                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF128C7E)
-                        )
-                    ) {
-                        Text(
-                            text = "Open Chat Screen",
-                            color = Color.White
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "WhatsApp-style 1-to-1 chat\nKotlin Multiplatform • MVVM • Clean Architecture",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
-                }
+                Screen.Tasks -> TasksScreen()
+                Screen.Debts -> DebtsScreen()
             }
         }
     }
