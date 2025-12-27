@@ -3,6 +3,8 @@ package com.example.fitlestikkanka.core.di
 import com.example.fitlestikkanka.chat.data.AiClassificationHandler
 import com.example.fitlestikkanka.chat.data.datasource.local.MessageLocalDataSource
 import com.example.fitlestikkanka.chat.data.datasource.local.MessageLocalDataSourceImpl
+import com.example.fitlestikkanka.chat.data.datasource.remote.MessageApiService
+import com.example.fitlestikkanka.chat.data.datasource.remote.MessageApiServiceImpl
 import com.example.fitlestikkanka.chat.data.datasource.remote.WebSocketClient
 import com.example.fitlestikkanka.chat.data.datasource.remote.WebSocketClientImpl
 import com.example.fitlestikkanka.chat.data.repository.ConversationRepositoryImpl
@@ -36,6 +38,13 @@ val chatModule = module {
     }
 
     // Data Sources - Remote
+    single<MessageApiService> {
+        MessageApiServiceImpl(
+            httpClient = get(),
+            authRepository = get()
+        )
+    }
+
     single<WebSocketClient> {
         WebSocketClientImpl(
             httpClient = get(),
@@ -55,8 +64,9 @@ val chatModule = module {
     single<MessageRepository> {
         MessageRepositoryImpl(
             localDataSource = get(),
+            messageApiService = get(),
             webSocketClient = get(),
-            currentUserId = "1", // Will be set from authenticated user
+            authRepository = get(),
             aiClassificationHandler = get()
         )
     }
@@ -93,6 +103,7 @@ val chatModule = module {
         ChatViewModel(
             conversationId = conversationId,
             currentUserId = currentUserId,
+            messageRepository = get(),
             sendMessageUseCase = get(),
             observeMessagesUseCase = get(),
             updateMessageStatusUseCase = get(),

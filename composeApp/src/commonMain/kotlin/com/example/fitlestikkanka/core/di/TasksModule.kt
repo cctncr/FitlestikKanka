@@ -24,7 +24,7 @@ val tasksModule = module {
 
     // Data Sources - Remote
     single<TasksApiService> {
-        TasksApiServiceImpl(httpClient = get())
+        TasksApiServiceImpl(httpClient = get(), authRepository = get())
     }
 
     // Repositories

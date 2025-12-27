@@ -23,7 +23,7 @@ val debtsModule = module {
 
     // Data Sources - Remote
     single<DebtsApiService> {
-        DebtsApiServiceImpl(httpClient = get())
+        DebtsApiServiceImpl(httpClient = get(), authRepository = get())
     }
 
     // Repositories

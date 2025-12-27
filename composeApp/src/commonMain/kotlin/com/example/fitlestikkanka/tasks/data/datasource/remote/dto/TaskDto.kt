@@ -15,9 +15,9 @@ data class TaskDto(
     val itemName: String,
     val status: String,
     @SerialName("creator_id")
-    val creatorId: Int,
+    val creatorId: Int? = null,  // Optional - backend may not return
     @SerialName("assignee_id")
-    val assigneeId: Int,
+    val assigneeId: Int? = null,  // Optional - backend may not return
     @SerialName("created_at")
     val createdAt: String,  // ISO timestamp
     @SerialName("completed_at")

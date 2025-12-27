@@ -3,6 +3,7 @@ package com.example.fitlestikkanka.chat.data.datasource.remote
 import com.example.fitlestikkanka.auth.domain.repository.AuthRepository
 import com.example.fitlestikkanka.chat.data.datasource.remote.dto.MessageDto
 import com.example.fitlestikkanka.chat.data.datasource.remote.dto.MessageStatusUpdateDto
+import com.example.fitlestikkanka.core.config.ApiConfig
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
@@ -12,7 +13,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 /**
@@ -49,7 +49,7 @@ class WebSocketClientImpl(
 
             // Establish WebSocket connection with token
             session = httpClient.webSocketSession(
-                urlString = "ws://localhost:8000/ws/$token"
+                urlString = "${ApiConfig.WS_BASE_URL}/ws/$token"
             )
 
             _connectionState.value = ConnectionState.CONNECTED

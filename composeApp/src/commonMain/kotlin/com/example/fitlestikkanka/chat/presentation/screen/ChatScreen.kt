@@ -44,6 +44,12 @@ fun ChatScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    // Load messages every time screen is opened
+    LaunchedEffect(conversationId) {
+        println("DEBUG: ChatScreen - LaunchedEffect triggered, syncing messages")
+        viewModel.syncMessages()
+    }
+
     ChatScreenContent(
         uiState = uiState,
         onEvent = viewModel::onEvent,

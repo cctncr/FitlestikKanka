@@ -28,6 +28,11 @@ fun DebtsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    // Refresh debts every time this screen becomes visible
+    LaunchedEffect(Unit) {
+        viewModel.loadDebts()
+    }
+
     DebtsScreenContent(
         uiState = uiState,
         onRetry = viewModel::retry
@@ -99,8 +104,13 @@ private fun DebtBalanceCard(balance: com.example.fitlestikkanka.debts.domain.mod
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = "Alacaklı: ${balance.totalOwing} TL",
+                text = "Alacaklı: ${balance.totalToCollect} TL",
                 color = Color.Green,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Net: ${balance.netBalance} TL",
+                color = if (balance.netBalance >= 0) Color.Green else Color.Red,
                 style = MaterialTheme.typography.bodyMedium
             )
         }

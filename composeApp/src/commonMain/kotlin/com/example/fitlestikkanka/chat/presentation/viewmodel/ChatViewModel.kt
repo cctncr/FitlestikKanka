@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitlestikkanka.chat.domain.model.MessageStatus
 import com.example.fitlestikkanka.chat.domain.model.Participant
+import com.example.fitlestikkanka.chat.domain.repository.MessageRepository
 import com.example.fitlestikkanka.chat.domain.usecase.LoadConversationUseCase
 import com.example.fitlestikkanka.chat.domain.usecase.ObserveMessagesUseCase
 import com.example.fitlestikkanka.chat.domain.usecase.SendMessageUseCase
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
  *
  * @property conversationId ID of the conversation being viewed
  * @property currentUserId ID of the currently logged-in user
+ * @property messageRepository Repository for fetching message history
  * @property sendMessageUseCase Use case for sending messages
  * @property observeMessagesUseCase Use case for observing message updates
  * @property updateMessageStatusUseCase Use case for updating message status
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 class ChatViewModel(
     private val conversationId: String,
     private val currentUserId: String,
+    private val messageRepository: MessageRepository,
     private val sendMessageUseCase: SendMessageUseCase,
     private val observeMessagesUseCase: ObserveMessagesUseCase,
     private val updateMessageStatusUseCase: UpdateMessageStatusUseCase,
@@ -46,6 +49,7 @@ class ChatViewModel(
 
     init {
         loadConversation()
+        syncMessages()
         observeMessages()
     }
 
@@ -77,6 +81,24 @@ class ChatViewModel(
                     _uiState.value = ChatUiState.Error(
                         message = error.message ?: "Failed to load conversation"
                     )
+                }
+        }
+    }
+
+    /**
+     * Syncs message history from server.
+     * Fetches recent messages and saves them to local DB.
+     */
+    fun syncMessages() {
+        viewModelScope.launch {
+            println("DEBUG: ChatViewModel - Starting syncMessages for conversation: $conversationId")
+            messageRepository.syncMessages(conversationId)
+                .onSuccess {
+                    println("DEBUG: ChatViewModel - syncMessages SUCCESS")
+                }
+                .onFailure { error ->
+                    println("ERROR: ChatViewModel - Failed to sync messages: ${error.message}")
+                    error.printStackTrace()
                 }
         }
     }

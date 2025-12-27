@@ -38,13 +38,8 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun getCurrentUser(): Result<User> {
-        // Check local storage first
-        val localUser = localDataSource.getCurrentUser()
-        if (localUser != null) {
-            return Result.success(localUser)
-        }
-
-        // If not available locally, try to fetch from API
+        // Always validate token with backend (don't use cached user)
+        // This ensures expired tokens are detected on app startup
         val token = localDataSource.getToken()
             ?: return Result.failure(Exception("No stored token"))
 
@@ -54,10 +49,19 @@ class AuthRepositoryImpl(
                 localDataSource.saveCurrentUser(user)
                 user
             }
+            .onFailure {
+                // Clear stored data if validation fails (token expired)
+                localDataSource.clearToken()
+                localDataSource.clearCurrentUser()
+            }
     }
 
     override suspend fun getStoredToken(): AuthToken? {
         return localDataSource.getToken()
+    }
+
+    override suspend fun getCurrentUserId(): String? {
+        return localDataSource.getCurrentUser()?.id?.toString()
     }
 
     override suspend fun logout() {

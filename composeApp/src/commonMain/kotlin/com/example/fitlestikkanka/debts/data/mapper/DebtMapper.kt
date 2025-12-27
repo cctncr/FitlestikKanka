@@ -32,7 +32,8 @@ object DebtMapper {
             userId = dto.userId,
             username = dto.username,
             totalOwed = dto.totalOwed,
-            totalOwing = dto.totalOwing
+            totalToCollect = dto.totalToCollect,
+            netBalance = dto.netBalance
         )
     }
 }

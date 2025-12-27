@@ -29,13 +29,15 @@ data class DebtDto(
  */
 @Serializable
 data class DebtBalanceDto(
-    @SerialName("user_id")
-    val userId: Int,
+    @SerialName("user_id")  // Try correct field name first
+    val userId: Int? = null,  // Make optional in case backend doesn't send it
     val username: String,
     @SerialName("total_owed")
     val totalOwed: Double,
-    @SerialName("total_owing")
-    val totalOwing: Double
+    @SerialName("total_to_collect")  // Backend uses this instead of total_owing
+    val totalToCollect: Double,
+    @SerialName("net_balance")
+    val netBalance: Double
 )
 
 /**

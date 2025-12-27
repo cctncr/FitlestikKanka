@@ -33,6 +33,13 @@ interface AuthRepository {
     suspend fun getStoredToken(): AuthToken?
 
     /**
+     * Get current user ID from local storage.
+     *
+     * @return User ID as string if available, null otherwise
+     */
+    suspend fun getCurrentUserId(): String?
+
+    /**
      * Clear stored authentication data.
      */
     suspend fun logout()

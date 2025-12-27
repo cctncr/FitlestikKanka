@@ -1,7 +1,9 @@
 package com.example.fitlestikkanka.chat.data.repository
 
+import com.example.fitlestikkanka.auth.domain.repository.AuthRepository
 import com.example.fitlestikkanka.chat.data.AiClassificationHandler
 import com.example.fitlestikkanka.chat.data.datasource.local.MessageLocalDataSource
+import com.example.fitlestikkanka.chat.data.datasource.remote.MessageApiService
 import com.example.fitlestikkanka.chat.data.datasource.remote.WebSocketClient
 import com.example.fitlestikkanka.chat.data.mapper.MessageMapper
 import com.example.fitlestikkanka.chat.domain.model.Message
@@ -17,7 +19,7 @@ import kotlin.uuid.Uuid
 
 /**
  * Implementation of MessageRepository.
- * Coordinates between local database and remote WebSocket data sources.
+ * Coordinates between local database and remote data sources (REST API and WebSocket).
  *
  * Implements offline-first architecture:
  * - All operations save to local DB first
@@ -25,14 +27,16 @@ import kotlin.uuid.Uuid
  * - UI is driven by local DB emissions
  *
  * @property localDataSource Local SQLDelight data source
- * @property webSocketClient Remote WebSocket client
- * @property currentUserId ID of the current logged-in user
+ * @property messageApiService REST API service for fetching message history
+ * @property webSocketClient Remote WebSocket client for real-time messages
+ * @property authRepository Auth repository for getting current user ID
  * @property aiClassificationHandler Handler for AI-classified messages
  */
 class MessageRepositoryImpl(
     private val localDataSource: MessageLocalDataSource,
+    private val messageApiService: MessageApiService,
     private val webSocketClient: WebSocketClient,
-    private val currentUserId: String,
+    private val authRepository: AuthRepository,
     private val aiClassificationHandler: AiClassificationHandler
 ) : MessageRepository {
 
@@ -47,6 +51,7 @@ class MessageRepositoryImpl(
     override fun observeMessages(conversationId: String): Flow<List<Message>> {
         return localDataSource.observeMessages(conversationId)
             .map { messages ->
+                val currentUserId = authRepository.getCurrentUserId() ?: ""
                 messages.map { message ->
                     message.copy(isFromCurrentUser = message.senderId == currentUserId)
                 }
@@ -114,9 +119,27 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun syncMessages(conversationId: String): Result<Unit> {
-        // TODO: Implement full message sync from server
-        // Would fetch historical messages not present locally
-        return Result.success(Unit)
+        return try {
+            // Fetch historical messages from server
+            val currentUserId = authRepository.getCurrentUserId() ?: ""
+            val otherUserId = conversationId // Assuming conversationId is the other user's ID
+
+            messageApiService.fetchMessages(otherUserId, limit = 50)
+                .onSuccess { dtos ->
+                    // Save all fetched messages to local DB
+                    dtos.forEach { dto ->
+                        val message = MessageMapper.toDomain(dto, currentUserId)
+                        localDataSource.insertMessage(message)
+                    }
+                }
+                .getOrElse { error ->
+                    return Result.failure(error)
+                }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     /**
@@ -131,6 +154,7 @@ class MessageRepositoryImpl(
                     aiClassificationHandler.handleClassification(dto)
 
                     // Then save message to local DB
+                    val currentUserId = authRepository.getCurrentUserId() ?: ""
                     val message = MessageMapper.toDomain(dto, currentUserId)
                     localDataSource.insertMessage(message)
                 }

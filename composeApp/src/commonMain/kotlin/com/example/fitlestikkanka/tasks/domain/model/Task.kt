@@ -11,8 +11,8 @@ data class Task(
     val id: Int,
     val itemName: String,
     val status: TaskStatus,
-    val creatorId: Int,
-    val assigneeId: Int,
+    val creatorId: Int? = null,  // Optional - backend may not return
+    val assigneeId: Int? = null,  // Optional - backend may not return
     val createdAt: Instant,
     val completedAt: Instant? = null
 )

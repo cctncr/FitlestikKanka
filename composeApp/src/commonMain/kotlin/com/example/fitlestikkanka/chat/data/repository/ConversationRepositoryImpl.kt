@@ -29,7 +29,7 @@ class ConversationRepositoryImpl : ConversationRepository {
                 ),
                 Participant(
                     userId = "other-user",
-                    name = "John Doe",
+                    name = "Yusuf",
                     isOnline = true,
                     isCurrentUser = false
                 )
@@ -54,7 +54,7 @@ class ConversationRepositoryImpl : ConversationRepository {
                 ),
                 Participant(
                     userId = "other-user",
-                    name = "John Doe",
+                    name = "Yusuf",
                     isOnline = true,
                     isCurrentUser = false
                 )

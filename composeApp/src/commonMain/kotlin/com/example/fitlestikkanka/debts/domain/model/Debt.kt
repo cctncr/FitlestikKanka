@@ -22,8 +22,9 @@ data class Debt(
  * Used to display summary of debts owed/owing.
  */
 data class DebtBalance(
-    val userId: Int,
+    val userId: Int? = null,      // Optional - backend may not send
     val username: String,
-    val totalOwed: Double,     // Amount others owe to you
-    val totalOwing: Double     // Amount you owe to others
+    val totalOwed: Double,        // Amount others owe to you
+    val totalToCollect: Double,   // Amount you can collect from others
+    val netBalance: Double        // Net balance (positive = owed to you, negative = you owe)
 )

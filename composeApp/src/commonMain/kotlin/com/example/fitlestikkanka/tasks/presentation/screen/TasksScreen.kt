@@ -28,6 +28,11 @@ fun TasksScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    // Refresh tasks every time this screen becomes visible
+    LaunchedEffect(Unit) {
+        viewModel.loadTasks()
+    }
+
     TasksScreenContent(
         uiState = uiState,
         onRetry = viewModel::retry
